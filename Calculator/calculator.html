@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liquid Calculator</title>
+    <title>Liquid Glass Calculator with History</title>
     <link rel="stylesheet" href="calculator.css">
     <script src="calculator.js" defer></script>
 </head>
@@ -13,6 +13,7 @@
 
     <div class="calculator">
         <div class="display">
+            <button class="history-toggle" onclick="toggleHistory()" title="View History">🕒</button>
             <div class="history" id="history"></div>
             <div class="current" id="current">0</div>
         </div>
@@ -52,6 +53,16 @@
             <button id="dot" class="btn-num" onclick="handleInput(this, '.')"><span class="label">.</span><span class="pet pet-bounce">🎯</span></button>
             <button id="pi" class="btn-sci" onclick="handleInput(this, 'π')"><span class="label">π</span><span class="pet pet-swivel">🥧</span></button>
             <button id="eq" class="btn-equals" onclick="handleInput(this, '=')"><span class="label">=</span><span class="pet pet-equals">🎉</span></button>
+        </div>
+
+        <div id="history-panel" class="history-panel">
+            <div class="history-header">
+                <h3>Calculation History</h3>
+                <button class="close-history" onclick="toggleHistory()">✕</button>
+            </div>
+            <div id="history-list" class="history-list">
+                </div>
+            <button class="btn-action clear-history" onclick="clearHistory()">Clear History</button>
         </div>
     </div>
 </body>
