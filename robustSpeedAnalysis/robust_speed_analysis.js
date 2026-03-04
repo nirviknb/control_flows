@@ -26,16 +26,18 @@ let timer = null;
 let currentSentence = "";
 let totalCorrectWords = 0;
 let isRunning = false;
+let startTime = 0;
 
-// DOM Elements
 const textDisplay = document.getElementById('textDisplay');
 const userInput = document.getElementById('userInput');
 const timerSpan = document.getElementById('timer');
+const wpmSpan = document.getElementById('wpm');
 const startBtn = document.getElementById('startBtn');
 
-// Time Selection
+// Time Selection Logic
 document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', function() {
+        if (isRunning) return;
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
         timeLeft = parseInt(this.dataset.time);
@@ -59,18 +61,24 @@ function startTest() {
     if (isRunning) return;
     isRunning = true;
     totalCorrectWords = 0;
+    const initialTime = timeLeft;
     
-    startBtn.disabled = true;
+    startBtn.style.display = 'none';
     userInput.disabled = false;
     userInput.focus();
     
     loadNewSentence();
     
-    const initialTime = timeLeft;
     timer = setInterval(() => {
         timeLeft--;
         timerSpan.innerText = timeLeft + "s";
         
+        // Real-time WPM Calculation
+        let timeElapsed = (initialTime - timeLeft) / 60;
+        if (timeElapsed > 0) {
+            wpmSpan.innerText = Math.round(totalCorrectWords / timeElapsed);
+        }
+
         if (timeLeft <= 0) {
             endTest(initialTime);
         }
@@ -81,22 +89,19 @@ userInput.addEventListener('input', () => {
     const charSpans = textDisplay.querySelectorAll('span');
     const inputValue = userInput.value.split('');
     
-    let isAllCorrect = true;
     charSpans.forEach((span, i) => {
         const char = inputValue[i];
         if (char == null) {
             span.className = "";
-            isAllCorrect = false;
         } else if (char === span.innerText) {
             span.className = "correct";
         } else {
             span.className = "incorrect";
-            isAllCorrect = false;
         }
     });
 
-    // If sentence finished correctly, add to word count and load next
-    if (userInput.value === currentSentence) {
+    // DEBUGGED: Check if sentence is finished (using trim to handle trailing spaces)
+    if (userInput.value.trim() === currentSentence) {
         const words = currentSentence.split(' ').length;
         totalCorrectWords += words;
         loadNewSentence();
@@ -108,14 +113,13 @@ function endTest(totalTime) {
     isRunning = false;
     userInput.disabled = true;
     
-    // Final WPM Calculation: Correct Words / (Time in Minutes)
     const minutes = totalTime / 60;
     const finalWpm = Math.round(totalCorrectWords / minutes);
     
     document.getElementById('resultModal').style.display = 'flex';
     document.getElementById('finalStats').innerHTML = `
-        <p style="font-size: 3rem; color: #ffff00;">${finalWpm} WPM</p>
-        <p>TOTAL CORRECT WORDS: ${totalCorrectWords}</p>
+        <div class="stat-circle">${finalWpm}<span>WPM</span></div>
+        <p>Correct Words: ${totalCorrectWords}</p>
     `;
 }
 
