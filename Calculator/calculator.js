@@ -3,38 +3,29 @@ const currentDisplay = document.getElementById('current');
 let currentExpression = '0';
 let calculated = false;
 
-// Time in ms for the animation/flash state
-const ANIMATION_DURATION = 600; // matching CSS animation-duration
+// --- NEW: History State Array ---
+let calculationHistory = [];
+const ANIMATION_DURATION = 600; 
 
 function updateDisplay() {
     currentDisplay.innerText = currentExpression;
-    // Auto-scroll long equations to the right
     currentDisplay.scrollLeft = currentDisplay.scrollWidth;
 }
 
-// --- Combined Input Handler for Visuals & Math ---
-// buttonElement: the 'this' object from HTML, representing the DOM element
-// value: the mathematical value to process
 function handleInput(buttonElement, value) {
-    // 1. Trigger Visuals (Animation + subtle state flash)
     if (buttonElement) {
-        // Trigger the flash state temporarily
         buttonElement.classList.add('btn-active');
         setTimeout(() => buttonElement.classList.remove('btn-active'), 100);
 
-        // Find the specific pet <span> inside this button
         const petSpan = buttonElement.querySelector('.pet');
         if (petSpan) {
-            // Add the animation class
             petSpan.classList.add('pet-active');
-            // Remove it after the animation completes so it can be re-triggered
             setTimeout(() => {
                 petSpan.classList.remove('pet-active');
             }, ANIMATION_DURATION);
         }
     }
 
-    // 2. Trigger Math Logic based on value type
     if (value === 'AC') {
         clearAll();
     } else if (value === 'DEL') {
@@ -46,7 +37,6 @@ function handleInput(buttonElement, value) {
     }
 }
 
-// Original Math Functions (minor tweaks to manage internal state)
 function appendInput(value) {
     if (calculated) {
         if (/[0-9π(]/.test(value)) {
@@ -116,9 +106,16 @@ function calculate() {
             result = parseFloat(result.toFixed(8)); 
         }
 
-        historyDisplay.innerText = currentExpression + ' =';
-        currentExpression = result.toString();
+        let previousEquation = currentExpression;
+        let finalResult = result.toString();
+
+        historyDisplay.innerText = previousEquation + ' =';
+        currentExpression = finalResult;
         calculated = true;
+
+        // --- NEW: Add successful calculation to history log ---
+        addToHistory(previousEquation, finalResult);
+
     } catch (error) {
         historyDisplay.innerText = currentExpression;
         currentExpression = 'Error';
@@ -127,8 +124,66 @@ function calculate() {
     updateDisplay();
 }
 
-// --- Updated Keyboard Support to pass button DOM elements ---
-// Map keyboard keys to the IDs defined in the HTML
+// =========================================
+// --- NEW: HISTORY LOGIC FUNCTIONS ---
+// =========================================
+
+function addToHistory(equation, result) {
+    // Push new record to the start of the array
+    calculationHistory.unshift({ eq: equation, res: result });
+    renderHistory();
+}
+
+function renderHistory() {
+    const list = document.getElementById('history-list');
+    list.innerHTML = ''; // Clear current list
+
+    if (calculationHistory.length === 0) {
+        list.innerHTML = '<p style="color: rgba(255,255,255,0.4); text-align: center; margin-top: 20px;">No history yet</p>';
+        return;
+    }
+
+    // Generate HTML for each history record
+    calculationHistory.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'history-record';
+        // When tapped, load the result back into the calculator
+        div.onclick = () => loadFromHistory(item.res);
+        div.innerHTML = `
+            <div class="eq">${item.eq} =</div>
+            <div class="res">${item.res}</div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function toggleHistory() {
+    const panel = document.getElementById('history-panel');
+    panel.classList.toggle('show');
+    // Ensure it renders properly when opened
+    if(panel.classList.contains('show')) {
+        renderHistory();
+    }
+}
+
+function clearHistory() {
+    calculationHistory = [];
+    renderHistory();
+    // Optional: automatically close the panel when cleared
+    // toggleHistory(); 
+}
+
+function loadFromHistory(resultValue) {
+    currentExpression = resultValue;
+    calculated = true; // Treats the loaded number like a freshly calculated result
+    historyDisplay.innerText = 'Loaded from history';
+    updateDisplay();
+    toggleHistory(); // Close panel after selection
+}
+
+// =========================================
+// --- KEYBOARD SUPPORT ---
+// =========================================
 const keyMap = {
     '0': 'num0', '1': 'num1', '2': 'num2', '3': 'num3', '4': 'num4',
     '5': 'num5', '6': 'num6', '7': 'num7', '8': 'num8', '9': 'num9',
@@ -136,30 +191,41 @@ const keyMap = {
     '^': 'pow', '(': 'lpar', ')': 'rpar',
     'Enter': 'eq', '=': 'eq',
     'Backspace': 'del', 'Escape': 'ac',
-    // Shortcut keys for sci functions
     'p': 'pi', 's': 'sin', 'c': 'cos', 't': 'tan',
-    'l': 'log', 'n': 'ln', 'r': 'sqrt'
+    'l': 'log', 'n': 'ln', 'r': 'sqrt',
+    'h': 'history-toggle' // Added keyboard shortcut 'h' for history
 };
 
-// Map mathematical input value associated with the key (if different from visual button value)
 const mathValueMap = {
     '*': '×', '/': '÷', '-': '−'
 };
 
 document.addEventListener('keydown', (event) => {
+    // Don't trigger calculator if user has history panel open
+    if (document.getElementById('history-panel').classList.contains('show') && event.key !== 'Escape' && event.key !== 'h') {
+        return; 
+    }
+
     const key = event.key;
     const buttonId = keyMap[key];
 
-    // Check if the pressed key is mapped to an on-screen button
+    if (key === 'h' || key === 'H') {
+        toggleHistory();
+        return;
+    }
+
+    // Close history on escape
+    if (key === 'Escape' && document.getElementById('history-panel').classList.contains('show')) {
+        toggleHistory();
+        return;
+    }
+
     if (buttonId) {
-        event.preventDefault(); // Stop scrolling/back browser actions
+        event.preventDefault(); 
         const targetButton = document.getElementById(buttonId);
         
-        // Find the math value to pass to handleInput.
-        // It's usually the key itself, but we need the translated symbols for operators.
         let mathVal = mathValueMap[key] || key;
 
-        // Special case logic for shortcut keys, map them back to standard input
         if (key === 'Enter') mathVal = '=';
         if (key === 'Escape') mathVal = 'AC';
         if (key === 'Backspace') mathVal = 'DEL';
@@ -172,8 +238,10 @@ document.addEventListener('keydown', (event) => {
         if (key.toLowerCase() === 'r') mathVal = '√(';
 
         if (targetButton) {
-            // Trigger both the visuals and the math logic
             handleInput(targetButton, mathVal);
         }
     }
 });
+
+// Initialize empty history text on load
+renderHistory();
