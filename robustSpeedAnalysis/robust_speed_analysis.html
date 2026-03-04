@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xito_Type_Gar</title>
-    <link rel="stylesheet" href="robust_speed_analysis.css">
+    <link rel="stylesheet" href="robust_analysis.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Xito_Type_Gar.exe</h1>
-            <div class="mode-selector">
-                <button class="mode-btn active" data-time="30">30s</button>
-                <button class="mode-btn" data-time="60">60s</button>
+            <div class="selector-group">
+                <div class="mode-selector">
+                    <label>Time:</label>
+                    <button class="mode-btn active" data-time="30">30s</button>
+                    <button class="mode-btn" data-time="60">60s</button>
+                </div>
+                <div class="difficulty-selector">
+                    <label>Difficulty:</label>
+                    <button class="difficulty-btn active" data-difficulty="medium">Medium</button>
+                    <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+                    <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+                </div>
             </div>
         </header>
 
@@ -30,6 +39,7 @@
 
         <div class="controls">
             <button id="startBtn" onclick="startTest()">INITIALIZE TEST</button>
+            <button id="pauseBtn" onclick="togglePause()" style="display:none;">PAUSE</button>
             <button id="resetBtn" onclick="resetTest()">RESET</button>
         </div>
 
@@ -40,8 +50,14 @@
                 <button onclick="resetTest()">TRY AGAIN</button>
             </div>
         </div>
+
+        <div class="test-history">
+            <h3>RECENT TESTS</h3>
+            <div id="historyList" class="history-list"></div>
+            <button id="clearHistoryBtn" onclick="clearHistory()" style="display:none;">CLEAR HISTORY</button>
+        </div>
     </div>
 
-    <script src="robust_speed_analysis.js"></script>
+    <script src="robust analysis.js"></script>
 </body>
 </html>
