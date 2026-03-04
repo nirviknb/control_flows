@@ -81,7 +81,7 @@ header h1 {
     padding: 8px 24px;
     border-radius: 20px;
     cursor: pointer;
-    margin: 0 8px;
+    margin: 8px 16px;
     transition: all 0.2s ease;
     font-size: 0.9rem;
     font-weight: 600;
@@ -117,7 +117,7 @@ header h1 {
     padding: 8px 24px;
     border-radius: 20px;
     cursor: pointer;
-    margin: 0 8px;
+    margin: 8px 16px;
     transition: all 0.2s ease;
     font-size: 0.9rem;
     font-weight: 600;
