@@ -3,7 +3,7 @@ const currentDisplay = document.getElementById('current');
 let currentExpression = '0';
 let calculated = false;
 
-// --- NEW: History State Array ---
+// --- History State Array ---
 let calculationHistory = [];
 const ANIMATION_DURATION = 600; 
 
@@ -38,6 +38,15 @@ function handleInput(buttonElement, value) {
 }
 
 function appendInput(value) {
+    // FIX: Overwrite text-based error states entirely instead of appending
+    if (['Error', 'Infinity', 'NaN', 'undefined'].includes(currentExpression)) {
+        currentExpression = value;
+        calculated = false;
+        historyDisplay.innerText = '';
+        updateDisplay();
+        return;
+    }
+
     if (calculated) {
         if (/[0-9π(]/.test(value)) {
             currentExpression = value;
@@ -67,6 +76,13 @@ function deleteLast() {
     if (calculated) {
         historyDisplay.innerText = '';
         calculated = false;
+    }
+
+    // FIX: Reset immediately if the string is a text error state
+    if (['Error', 'Infinity', 'NaN', 'undefined'].includes(currentExpression)) {
+        currentExpression = '0';
+        updateDisplay();
+        return;
     }
     
     if (currentExpression.endsWith('sin(') || currentExpression.endsWith('cos(') || currentExpression.endsWith('tan(') || currentExpression.endsWith('log(')) {
@@ -99,10 +115,25 @@ function calculate() {
         .replace(/√\(/g, 'Math.sqrt(')
         .replace(/\^/g, '**');
 
+    // FIX: Add implicit multiplication (e.g., 2π -> 2*Math.PI, 5(2) -> 5*(2))
+    mathExpression = mathExpression
+        .replace(/(\d)(Math\.|Math\.PI|\()/g, '$1*$2')
+        .replace(/(Math\.PI|\))(Math\.|Math\.PI|\d|\()/g, '$1*$2');
+
+    // FIX: Auto-close missing parentheses
+    const openParenCount = (mathExpression.match(/\(/g) || []).length;
+    const closeParenCount = (mathExpression.match(/\)/g) || []).length;
+    
+    if (openParenCount > closeParenCount) {
+        const missingCount = openParenCount - closeParenCount;
+        mathExpression += ')'.repeat(missingCount);
+        currentExpression += ')'.repeat(missingCount); 
+    }
+
     try {
         let result = new Function('return ' + mathExpression)();
         
-        if (result % 1 !== 0) {
+        if (result % 1 !== 0 && !isNaN(result)) {
             result = parseFloat(result.toFixed(8)); 
         }
 
@@ -113,7 +144,6 @@ function calculate() {
         currentExpression = finalResult;
         calculated = true;
 
-        // --- NEW: Add successful calculation to history log ---
         addToHistory(previousEquation, finalResult);
 
     } catch (error) {
@@ -125,29 +155,26 @@ function calculate() {
 }
 
 // =========================================
-// --- NEW: HISTORY LOGIC FUNCTIONS ---
+// --- HISTORY LOGIC FUNCTIONS ---
 // =========================================
 
 function addToHistory(equation, result) {
-    // Push new record to the start of the array
     calculationHistory.unshift({ eq: equation, res: result });
     renderHistory();
 }
 
 function renderHistory() {
     const list = document.getElementById('history-list');
-    list.innerHTML = ''; // Clear current list
+    list.innerHTML = ''; 
 
     if (calculationHistory.length === 0) {
         list.innerHTML = '<p style="color: rgba(255,255,255,0.4); text-align: center; margin-top: 20px;">No history yet</p>';
         return;
     }
 
-    // Generate HTML for each history record
     calculationHistory.forEach(item => {
         const div = document.createElement('div');
         div.className = 'history-record';
-        // When tapped, load the result back into the calculator
         div.onclick = () => loadFromHistory(item.res);
         div.innerHTML = `
             <div class="eq">${item.eq} =</div>
@@ -160,7 +187,6 @@ function renderHistory() {
 function toggleHistory() {
     const panel = document.getElementById('history-panel');
     panel.classList.toggle('show');
-    // Ensure it renders properly when opened
     if(panel.classList.contains('show')) {
         renderHistory();
     }
@@ -169,16 +195,14 @@ function toggleHistory() {
 function clearHistory() {
     calculationHistory = [];
     renderHistory();
-    // Optional: automatically close the panel when cleared
-    // toggleHistory(); 
 }
 
 function loadFromHistory(resultValue) {
     currentExpression = resultValue;
-    calculated = true; // Treats the loaded number like a freshly calculated result
+    calculated = true; 
     historyDisplay.innerText = 'Loaded from history';
     updateDisplay();
-    toggleHistory(); // Close panel after selection
+    toggleHistory(); 
 }
 
 // =========================================
@@ -193,7 +217,7 @@ const keyMap = {
     'Backspace': 'del', 'Escape': 'ac',
     'p': 'pi', 's': 'sin', 'c': 'cos', 't': 'tan',
     'l': 'log', 'n': 'ln', 'r': 'sqrt',
-    'h': 'history-toggle' // Added keyboard shortcut 'h' for history
+    'h': 'history-toggle' 
 };
 
 const mathValueMap = {
@@ -201,20 +225,22 @@ const mathValueMap = {
 };
 
 document.addEventListener('keydown', (event) => {
-    // Don't trigger calculator if user has history panel open
-    if (document.getElementById('history-panel').classList.contains('show') && event.key !== 'Escape' && event.key !== 'h') {
+    const key = event.key;
+    const lowerKey = key.toLowerCase();
+
+    // FIX: Guard logic is now case-insensitive
+    if (document.getElementById('history-panel').classList.contains('show') && key !== 'Escape' && lowerKey !== 'h') {
         return; 
     }
 
-    const key = event.key;
-    const buttonId = keyMap[key];
+    // FIX: Map check defaults to lowercase fallback
+    const buttonId = keyMap[key] || keyMap[lowerKey];
 
-    if (key === 'h' || key === 'H') {
+    if (lowerKey === 'h') {
         toggleHistory();
         return;
     }
 
-    // Close history on escape
     if (key === 'Escape' && document.getElementById('history-panel').classList.contains('show')) {
         toggleHistory();
         return;
@@ -229,13 +255,15 @@ document.addEventListener('keydown', (event) => {
         if (key === 'Enter') mathVal = '=';
         if (key === 'Escape') mathVal = 'AC';
         if (key === 'Backspace') mathVal = 'DEL';
-        if (key.toLowerCase() === 'p') mathVal = 'π';
-        if (key.toLowerCase() === 's') mathVal = 'sin(';
-        if (key.toLowerCase() === 'c') mathVal = 'cos(';
-        if (key.toLowerCase() === 't') mathVal = 'tan(';
-        if (key.toLowerCase() === 'l') mathVal = 'log(';
-        if (key.toLowerCase() === 'n') mathVal = 'ln(';
-        if (key.toLowerCase() === 'r') mathVal = '√(';
+        
+        // FIX: Replaced to match lowercase variants
+        if (lowerKey === 'p') mathVal = 'π';
+        if (lowerKey === 's') mathVal = 'sin(';
+        if (lowerKey === 'c') mathVal = 'cos(';
+        if (lowerKey === 't') mathVal = 'tan(';
+        if (lowerKey === 'l') mathVal = 'log(';
+        if (lowerKey === 'n') mathVal = 'ln(';
+        if (lowerKey === 'r') mathVal = '√(';
 
         if (targetButton) {
             handleInput(targetButton, mathVal);
