@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liquid Glass Calculator with History</title>
     <link rel="stylesheet" href="calculator.css">
-    <script src="calculator.js" defer></script>
+    <script src="./calculator.js" defer></script>
 </head>
 <body>
     <div class="orb orb-1"></div>
@@ -13,7 +13,7 @@
 
     <div class="calculator">
         <div class="display">
-            <button class="history-toggle" onclick="toggleHistory()" title="View History">🕒</button>
+            <button id="history-toggle" class="history-toggle" onclick="toggleHistory()" title="View History">🕒</button>
             <div class="history" id="history"></div>
             <div class="current" id="current">0</div>
         </div>
