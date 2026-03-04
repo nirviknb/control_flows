@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nitro Type Analysis</title>
+    <link rel="stylesheet" href="robust_speed_analysis.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SPEED_TEST.exe</h1>
+            <div class="mode-selector">
+                <button class="mode-btn active" data-time="30">30s</button>
+                <button class="mode-btn" data-time="60">60s</button>
+            </div>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">TIME: <span id="timer">0s</span></div>
+            <div class="stat">WPM: <span id="wpm">0</span></div>
+            <div class="stat">ACC: <span id="accuracy">100%</span></div>
+        </div>
+
+        <div id="textDisplay" class="text-display">
+            Select time and press Start to begin...
+        </div>
+
+        <textarea id="userInput" placeholder="Wait for start..." disabled></textarea>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startTest()">INITIALIZE TEST</button>
+            <button id="resetBtn" onclick="resetTest()">RESET</button>
+        </div>
+
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <h2>TEST_RESULTS</h2>
+                <div id="finalStats"></div>
+                <button onclick="resetTest()">TRY AGAIN</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="robust_speed_analysis.js"></script>
+</body>
+</html>

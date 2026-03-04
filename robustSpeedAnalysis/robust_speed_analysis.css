@@ -1,0 +1,103 @@
+:root {
+    --bg: #000000;
+    --primary: #ffff00; /* Yellow */
+    --text-dim: #555;
+    --text-bright: #ffffff;
+    --error: #ff4444;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--primary);
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    border: 2px solid var(--primary);
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.2);
+}
+
+.mode-selector { margin: 20px 0; }
+.mode-btn {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 5px 15px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.mode-btn.active {
+    background: var(--primary);
+    color: var(--bg);
+}
+
+.stats-bar {
+    display: flex;
+    gap: 30px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--text-dim);
+    padding-bottom: 10px;
+}
+
+.text-display {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    min-height: 100px;
+    color: var(--text-dim);
+    text-align: left;
+}
+
+.correct { color: var(--primary); }
+.incorrect { color: var(--bg); background: var(--error); }
+.current { text-decoration: underline; color: var(--text-bright); }
+
+textarea {
+    width: 100%;
+    height: 80px;
+    background: #111;
+    border: 1px solid var(--text-dim);
+    color: var(--primary);
+    padding: 15px;
+    font-size: 1.2rem;
+    resize: none;
+    box-sizing: border-box;
+}
+
+textarea:focus { outline: none; border-color: var(--primary); }
+
+.controls { margin-top: 20px; }
+#startBtn {
+    background: var(--primary);
+    color: var(--bg);
+    border: none;
+    padding: 15px 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Modal for Results */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    border: 2px solid var(--primary);
+    padding: 40px;
+    background: #000;
+    text-align: center;
+}
