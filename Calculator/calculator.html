@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Liquid Glass Calculator with Pets</title>
+    <title>Responsive Liquid Glass Calculator with Contextual Emojis</title>
     <link rel="stylesheet" href="calculator.css">
     <script src="calculator.js" defer></script>
 </head>
@@ -18,40 +18,40 @@
         </div>
         
         <div class="keypad">
-            <button id="sin" class="btn-sci" onclick="handleInput(this, 'sin(')"><span class="label">sin</span><span class="pet pet-swivel">🐱</span></button>
-            <button id="cos" class="btn-sci" onclick="handleInput(this, 'cos(')"><span class="label">cos</span><span class="pet pet-swivel">🐱</span></button>
-            <button id="tan" class="btn-sci" onclick="handleInput(this, 'tan(')"><span class="label">tan</span><span class="pet pet-swivel">🐱</span></button>
-            <button id="ac" class="btn-action" onclick="handleInput(this, 'AC')"><span class="label">AC</span><span class="pet pet-wobble">🦊</span></button>
+            <button id="sin" class="btn-sci" onclick="handleInput(this, 'sin(')"><span class="label">sin</span><span class="pet pet-swivel">🌊</span></button>
+            <button id="cos" class="btn-sci" onclick="handleInput(this, 'cos(')"><span class="label">cos</span><span class="pet pet-swivel">📐</span></button>
+            <button id="tan" class="btn-sci" onclick="handleInput(this, 'tan(')"><span class="label">tan</span><span class="pet pet-swivel">📏</span></button>
+            <button id="ac" class="btn-action" onclick="handleInput(this, 'AC')"><span class="label">AC</span><span class="pet pet-wobble">💣</span></button>
 
-            <button id="log" class="btn-sci" onclick="handleInput(this, 'log(')"><span class="label">log</span><span class="pet pet-swivel">🐶</span></button>
-            <button id="ln" class="btn-sci" onclick="handleInput(this, 'ln(')"><span class="label">ln</span><span class="pet pet-swivel">🐶</span></button>
-            <button id="sqrt" class="btn-sci" onclick="handleInput(this, '√(')"><span class="label">√</span><span class="pet pet-swivel">🐶</span></button>
-            <button id="del" class="btn-action" onclick="handleInput(this, 'DEL')"><span class="label">DEL</span><span class="pet pet-wobble">🦊</span></button>
+            <button id="log" class="btn-sci" onclick="handleInput(this, 'log(')"><span class="label">log</span><span class="pet pet-swivel">🪵</span></button>
+            <button id="ln" class="btn-sci" onclick="handleInput(this, 'ln(')"><span class="label">ln</span><span class="pet pet-swivel">🌱</span></button>
+            <button id="sqrt" class="btn-sci" onclick="handleInput(this, '√(')"><span class="label">√</span><span class="pet pet-swivel">🌳</span></button>
+            <button id="del" class="btn-action" onclick="handleInput(this, 'DEL')"><span class="label">DEL</span><span class="pet pet-wobble">🧽</span></button>
 
-            <button id="lpar" class="btn-sci" onclick="handleInput(this, '(')"><span class="label">(</span><span class="pet pet-flip">🐹</span></button>
-            <button id="rpar" class="btn-sci" onclick="handleInput(this, ')')"><span class="label">)</span><span class="pet pet-flip">🐹</span></button>
-            <button id="pow" class="btn-sci" onclick="handleInput(this, '^')"><span class="label">^</span><span class="pet pet-flip">🐹</span></button>
-            <button id="div" class="btn-op" onclick="handleInput(this, '÷')"><span class="label">÷</span><span class="pet pet-zoom">🐯</span></button>
+            <button id="lpar" class="btn-sci" onclick="handleInput(this, '(')"><span class="label">(</span><span class="pet pet-flip">🌛</span></button>
+            <button id="rpar" class="btn-sci" onclick="handleInput(this, ')')"><span class="label">)</span><span class="pet pet-flip">🌜</span></button>
+            <button id="pow" class="btn-sci" onclick="handleInput(this, '^')"><span class="label">^</span><span class="pet pet-flip">🚀</span></button>
+            <button id="div" class="btn-op" onclick="handleInput(this, '÷')"><span class="label">÷</span><span class="pet pet-zoom">🍕</span></button>
 
-            <button id="num7" class="btn-num" onclick="handleInput(this, '7')"><span class="label">7</span><span class="pet pet-bounce">🐰</span></button>
-            <button id="num8" class="btn-num" onclick="handleInput(this, '8')"><span class="label">8</span><span class="pet pet-bounce">🐻</span></button>
-            <button id="num9" class="btn-num" onclick="handleInput(this, '9')"><span class="label">9</span><span class="pet pet-bounce">🐻‍❄️</span></button>
-            <button id="mul" class="btn-op" onclick="handleInput(this, '×')"><span class="label">×</span><span class="pet pet-zoom">🦁</span></button>
+            <button id="num7" class="btn-num" onclick="handleInput(this, '7')"><span class="label">7</span><span class="pet pet-bounce">🎰</span></button>
+            <button id="num8" class="btn-num" onclick="handleInput(this, '8')"><span class="label">8</span><span class="pet pet-bounce">🎱</span></button>
+            <button id="num9" class="btn-num" onclick="handleInput(this, '9')"><span class="label">9</span><span class="pet pet-bounce">🐈</span></button>
+            <button id="mul" class="btn-op" onclick="handleInput(this, '×')"><span class="label">×</span><span class="pet pet-zoom">🐇</span></button>
 
-            <button id="num4" class="btn-num" onclick="handleInput(this, '4')"><span class="label">4</span><span class="pet pet-bounce">🐸</span></button>
-            <button id="num5" class="btn-num" onclick="handleInput(this, '5')"><span class="label">5</span><span class="pet pet-bounce">🐼</span></button>
-            <button id="num6" class="btn-num" onclick="handleInput(this, '6')"><span class="label">6</span><span class="pet pet-bounce">🐨</span></button>
-            <button id="sub" class="btn-op" onclick="handleInput(this, '−')"><span class="label">−</span><span class="pet pet-zoom">🐯</span></button>
+            <button id="num4" class="btn-num" onclick="handleInput(this, '4')"><span class="label">4</span><span class="pet pet-bounce">🍀</span></button>
+            <button id="num5" class="btn-num" onclick="handleInput(this, '5')"><span class="label">5</span><span class="pet pet-bounce">🖐️</span></button>
+            <button id="num6" class="btn-num" onclick="handleInput(this, '6')"><span class="label">6</span><span class="pet pet-bounce">🎲</span></button>
+            <button id="sub" class="btn-op" onclick="handleInput(this, '−')"><span class="label">−</span><span class="pet pet-zoom">🪓</span></button>
 
-            <button id="num1" class="btn-num" onclick="handleInput(this, '1')"><span class="label">1</span><span class="pet pet-bounce">🐥</span></button>
-            <button id="num2" class="btn-num" onclick="handleInput(this, '2')"><span class="label">2</span><span class="pet pet-bounce">🐤</span></button>
-            <button id="num3" class="btn-num" onclick="handleInput(this, '3')"><span class="label">3</span><span class="pet pet-bounce">🐣</span></button>
-            <button id="add" class="btn-op" onclick="handleInput(this, '+')"><span class="label">+</span><span class="pet pet-zoom">🦁</span></button>
+            <button id="num1" class="btn-num" onclick="handleInput(this, '1')"><span class="label">1</span><span class="pet pet-bounce">🥇</span></button>
+            <button id="num2" class="btn-num" onclick="handleInput(this, '2')"><span class="label">2</span><span class="pet pet-bounce">🚲</span></button>
+            <button id="num3" class="btn-num" onclick="handleInput(this, '3')"><span class="label">3</span><span class="pet pet-bounce">🚥</span></button>
+            <button id="add" class="btn-op" onclick="handleInput(this, '+')"><span class="label">+</span><span class="pet pet-zoom">🧱</span></button>
 
-            <button id="num0" class="btn-num" onclick="handleInput(this, '0')"><span class="label">0</span><span class="pet pet-bounce">🐵</span></button>
-            <button id="dot" class="btn-num" onclick="handleInput(this, '.')"><span class="label">.</span><span class="pet pet-bounce">🐭</span></button>
-            <button id="pi" class="btn-sci" onclick="handleInput(this, 'π')"><span class="label">π</span><span class="pet pet-swivel">🦉</span></button>
-            <button id="eq" class="btn-equals" onclick="handleInput(this, '=')"><span class="label">=</span><span class="pet pet-equals">🦄</span></button>
+            <button id="num0" class="btn-num" onclick="handleInput(this, '0')"><span class="label">0</span><span class="pet pet-bounce">🍩</span></button>
+            <button id="dot" class="btn-num" onclick="handleInput(this, '.')"><span class="label">.</span><span class="pet pet-bounce">🎯</span></button>
+            <button id="pi" class="btn-sci" onclick="handleInput(this, 'π')"><span class="label">π</span><span class="pet pet-swivel">🥧</span></button>
+            <button id="eq" class="btn-equals" onclick="handleInput(this, '=')"><span class="label">=</span><span class="pet pet-equals">🎉</span></button>
         </div>
     </div>
 </body>
