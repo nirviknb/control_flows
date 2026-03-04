@@ -87,13 +87,14 @@ body {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(7, 1fr);
+    /* Set auto rows to handle dynamic resizing gracefully */
+    grid-auto-rows: minmax(10px, 1fr);
     gap: clamp(8px, 2vw, 12px);
 }
 
 /* --- Glassmorphic Buttons --- */
 button {
-    position: relative; /* Necessary for absolute positioning of pets */
+    position: relative;
     border: none;
     outline: none;
     background: rgba(255, 255, 255, 0.05);
@@ -104,62 +105,110 @@ button {
     font-weight: 500;
     border-radius: clamp(12px, 3vw, 18px);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition for resizing */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
     width: 100%;
-    overflow: visible; /* Let pets pop out! */
+    overflow: visible;
 }
 
-/* Centralizing button text */
 .label {
     font-size: clamp(16px, 4vw, 18px);
-    z-index: 2; /* Keep text above the pet slightly */
+    z-index: 2;
 }
 
-/* --- Active/Flash state (triggered by Keyboard and Click) --- */
 button:active,
 button.btn-active {
     background: rgba(218, 145, 0, 0.2);
     border-color: rgba(218, 145, 0, 0.5);
     transform: scale(0.95);
     box-shadow: 0 0 15px rgba(218, 145, 0, 0.7);
-    transition: all 0.05s ease; /* fast snap back */
+    transition: all 0.05s ease;
 }
 
 /* --- Pet Base Styling & Core Logic --- */
 .pet {
     position: absolute;
-    opacity: 0; /* Hidden initially */
-    transform: translate(-50%, -50%) scale(0); /* Center and shrink */
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
     left: 50%;
     top: 50%;
-    pointer-events: none; /* Can't click the pet */
-    z-index: 1; /* Pet sits behind text or slightly over depending on style */
+    pointer-events: none;
+    z-index: 1;
     font-size: clamp(20px, 6vw, 28px);
 }
 
-/* This class gets added temporarily in JS */
 .pet-active {
     animation-duration: 0.6s;
     animation-timing-function: ease-out;
     animation-fill-mode: forwards;
 }
 
-/* Special Button Accents */
+/* --- FIXED: Contrast for Operators and Action Buttons --- */
 .btn-sci { color: rgba(255, 255, 255, 0.7); }
 .btn-sci .label { font-size: clamp(13px, 3vw, 15px); }
-.btn-op { background: rgba(218, 145, 0, 0.1); color: #DA9100; font-weight: 600; }
+
+.btn-op { 
+    background: rgba(218, 145, 0, 0.1); 
+    color: #DA9100; 
+    font-weight: 600; 
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.8);
+}
 .btn-op .label { font-size: clamp(20px, 5vw, 22px); }
-.btn-action { background: rgba(218, 145, 0, 0.2); color: #DA9100; }
-.btn-equals { background: rgba(218, 145, 0, 0.7); color: #000; font-weight: 600; grid-column: span 2; }
 
-/* --- 6 Unique Pet Animations for different button groups --- */
+.btn-action { 
+    background: rgba(218, 145, 0, 0.2); 
+    color: #DA9100; 
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.8);
+}
 
-/* 1. Bounce Up (Numbers) */
+.btn-op:active, .btn-op.btn-active,
+.btn-action:active, .btn-action.btn-active {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+/* ========================================= */
+/* --- DYNAMIC EQUALS BUTTON SIZING --- */
+/* ========================================= */
+.btn-equals { 
+    background: rgba(218, 145, 0, 0.7); 
+    color: #000; 
+    font-weight: 700; 
+    
+    /* Dynamic scaling limits */
+    min-height: clamp(60px, 12vh, 120px);
+    
+    /* Defaults to a massive bottom bar on small screens */
+    grid-column: 1 / -1; 
+    grid-row: auto;
+}
+
+.btn-equals .label {
+    font-size: clamp(24px, 8vw, 36px); /* Make the equal sign larger */
+}
+
+/* When window is wider than 400px, tuck it nicely to the right */
+@media (min-width: 400px) {
+    .btn-equals {
+        grid-column: span 2; /* Snaps to take up half the bottom row */
+        min-height: unset; /* Reverts height to match other buttons in the grid */
+    }
+}
+
+/* When the window is really tall, make it span vertically too! */
+@media (min-width: 400px) and (min-height: 750px) {
+    .btn-equals {
+        grid-column: 4; /* Pushes to the far right column */
+        grid-row: span 2; /* Spans across two rows vertically */
+    }
+}
+
+
+/* --- 6 Unique Pet Animations --- */
 .btn-num .pet-active { animation-name: bouncePet; z-index: 3; }
 @keyframes bouncePet {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(0); top: 50%; }
@@ -167,14 +216,12 @@ button.btn-active {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(1); top: 120%; }
 }
 
-/* 2. Swivel/Rotate (Sci trig/logs) */
 .btn-sci:not(:has(#pi)) .pet-active { animation-name: swivelPet; opacity: 0.4; }
 @keyframes swivelPet {
     0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.5) rotate(0deg); }
     100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5) rotate(180deg); }
 }
 
-/* 3. Wobble Side-to-side (AC/DEL) */
 .btn-action .pet-active { animation-name: wobblePet; z-index: 3; font-size: 32px; }
 @keyframes wobblePet {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
@@ -185,7 +232,6 @@ button.btn-active {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
 }
 
-/* 4. Zoom & Shiver (Basic Operators) */
 .btn-op .pet-active { animation-name: zoomPet; z-index: 3; font-size: 32px; }
 @keyframes zoomPet {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
@@ -195,27 +241,23 @@ button.btn-active {
     100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
 }
 
-/* 5. Flip (Parens/Power) */
 #lpar .pet-active, #rpar .pet-active, #pow .pet-active { animation-name: flipPet; opacity: 0.5; }
 @keyframes flipPet {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotateY(0deg); }
     100% { opacity: 0; transform: translate(-50%, -50%) scale(1) rotateY(1080deg); }
 }
 
-/* 6. Special handling for Pi - Swivel too */
 #pi .pet-active { animation-name: swivelPet; opacity: 0.4; }
 
-/* ========================================= */
-/* --- The '=' Button SPECIAL BIG FUN POP --- */
-/* ========================================= */
-.btn-equals .pet { font-size: clamp(30px, 9vw, 50px); } /* Start bigger */
+/* The '=' Button SPECIAL BIG FUN POP */
+.btn-equals .pet { font-size: clamp(30px, 9vw, 50px); }
 .btn-equals .pet-active { animation-name: bigEqualsPop; animation-duration: 0.8s; z-index: 4; }
 
 @keyframes bigEqualsPop {
     0% { opacity: 1; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
-    30% { opacity: 1; transform: translate(-50%, -50%) scale(2.2) rotate(-20deg); } /* Giant popup */
-    60% { transform: translate(-50%, -50%) scale(1.8) rotate(20deg); } /* Settle slightly */
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(720deg); } /* Explode away */
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(2.2) rotate(-20deg); }
+    60% { transform: translate(-50%, -50%) scale(1.8) rotate(20deg); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(720deg); }
 }
 
 /* Ambient Background Orbs */
