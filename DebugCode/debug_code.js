@@ -5,7 +5,7 @@ function performOperation(){
     //Check if inputs are valid numbers
     if(!isNaN(num1) && !isNaN(num2)){
         //perform the operation
-        let result = multiply(num1,num2);
+        let result = `The Multiplication of the numbers is: ${multiply(num1,num2)}. The division of the number is: ${division(num1,num2)}. The addition of numbers is: ${addition(num1, num2)}. The substraction of numbers is: ${substract(num1,num2)}.`;
         //Display the result
         displayResult(result);
     } else{
@@ -20,9 +20,23 @@ function multiply(a,b){
     //multiply the numbers
     return a*b;
 }
+function division(a,b){
+    debugger;
+    return a/2;
+}
+
+function substract(a,b){
+    debugger;
+    return a-b;
+}
+
+function addition(a,b){
+    debugger;
+    return a+b;
+}
 
 function displayResult(result){
     //displays result in the paragraph element
     const resultElement=document.getElementById('result');
-    resultElement.textContent=`The result is: ${result}`;
+    resultElement.textContent=result;
 }
